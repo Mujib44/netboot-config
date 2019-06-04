@@ -19,7 +19,6 @@ class Host(object):
 
         self._image_type = image_type
 
-
     def ipv4_address(self) -> str:
         return ".".join((str(x) for x in self._address))
 
@@ -45,7 +44,7 @@ class HostGroup(object):
 
     def add_hosts(self, image_type: str, machine_offset: int, machine_count: int) -> None:
         self._hosts += (Host(self.name_prefix, x, image_type) for i, x in enumerate(self.network.hosts())
-                       if machine_offset <= i < machine_offset + machine_count)
+                        if machine_offset <= i + 1 < machine_offset + machine_count)
 
     def hosts(self) -> List[Host]:
         return self._hosts
