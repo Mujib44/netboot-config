@@ -1,0 +1,12 @@
+hostgroups:
+  - cidr: 10.11.13.0/24
+    prefix: foo21
+    images:
+      - image_type: bar
+        offset: 10
+        count: 2
+      - image_type: baz
+        offset: 14
+        count: 2
+hosts:
+  influx: 10.11.12.11
