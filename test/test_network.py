@@ -48,7 +48,3 @@ class TestNetwork(object):
         host_names = [host.host_name() for host in hosts]
 
         assert_that(host_names).contains_only('foo11', 'foo12', 'foo13', 'foo14')
-
-        addresses = [host.ipv4_address() for host in hosts]
-
-        assert_that(addresses).contains_only('10.11.12.11', '10.11.12.12', '10.11.12.13', '10.11.12.14')
