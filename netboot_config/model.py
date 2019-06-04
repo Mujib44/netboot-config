@@ -12,7 +12,7 @@ class HostConfig(object):
     def render(self) -> str:
         return "CONF=\"" + ",".join(
             ["{};{};{{}};300".format(entry[0], entry[1]) for entry in
-             self.entries]) if self.entries else None + "\""
+             self.entries]) + "\"" if self.entries else None
 
 
 class ConfigFile(object):
@@ -23,9 +23,9 @@ class ConfigFile(object):
         self.netboot_ip = netboot_ip
 
     def write(self):
-        with open('config.{}'.format(self.host.ipv4_address_hex()), 'w') as kiwi_config_file:
+        with open('config.{}'.format(self.host.ipv4_address_hex), 'w') as kiwi_config_file:
             kiwi_config_file.write(
-                "IMAGE=/dev/ram1;{};1.42.3;{};10096\n".format(self.host.image_type(), self.netboot_ip))
+                "IMAGE=/dev/ram1;{};1.42.3;{};10096\n".format(self.host.image_type, self.netboot_ip))
             kiwi_config_file.write("UNIONFS_CONFIG=tmpfs,/dev/ram1,overlay\n")
             host_config_data = self.host_config.render()
             if host_config_data:

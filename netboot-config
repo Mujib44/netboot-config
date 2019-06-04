@@ -5,7 +5,7 @@ from argparse import ArgumentParser
 import yaml
 
 from netboot_config.model import HostConfig, ConfigFile
-from netboot_config.network import HostGroup
+from netboot_config.network import HostGroup, DefaultHost
 
 if __name__ == '__main__':
     parser = ArgumentParser(description="Generator for KIWI based netboot config files")
@@ -27,13 +27,15 @@ if __name__ == '__main__':
                 hosts = host_group.hosts()
                 for host in hosts:
                     host_config = HostConfig()
-                    path = host.host_name()
+                    host_name = host.host_name
 
-                    os.makedirs(path, exist_ok=True)
-                    host_name_file_path = os.path.join(path, 'hostname')
+                    os.makedirs(host_name, exist_ok=True)
+                    host_name_file_path = os.path.join(host_name, 'hostname')
                     with open(host_name_file_path, 'w') as host_name_file:
-                        host_name_file.write("{}\n".format(host.host_name()))
-                    host_name = host.host_name()
+                        host_name_file.write("{}\n".format(host.host_name))
                     host_config.add(os.path.join('KIWI', host_name_file_path), '/etc/hostname')
 
                     ConfigFile(host, host_config, netboot_host).write()
+
+            host_config = HostConfig()
+            ConfigFile(DefaultHost('base_image'), host_config, netboot_host).write()

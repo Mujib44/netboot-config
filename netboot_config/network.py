@@ -1,8 +1,45 @@
 import ipaddress
+from abc import ABCMeta, abstractmethod
 from typing import List
 
 
-class Host(object):
+class Host(metaclass=ABCMeta):
+
+    @property
+    @abstractmethod
+    def image_type(self):
+        pass
+
+    @property
+    @abstractmethod
+    def host_name(self):
+        pass
+
+    @property
+    @abstractmethod
+    def ipv4_address_hex(self):
+        pass
+
+
+class DefaultHost(Host):
+
+    def __init__(self, image_type):
+        self._image_type = image_type
+
+    @property
+    def image_type(self):
+        return self._image_type
+
+    @property
+    def host_name(self):
+        return None
+
+    @property
+    def ipv4_address_hex(self):
+        return "default"
+
+
+class SpecificHost(Host):
 
     def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: str):
         self.name_prefix = name_prefix
@@ -19,15 +56,19 @@ class Host(object):
 
         self._image_type = image_type
 
+    @property
     def ipv4_address(self) -> str:
         return ".".join((str(x) for x in self._address))
 
+    @property
     def ipv4_address_hex(self) -> str:
         return "".join(('{:02X}'.format(x) for x in self._address))
 
+    @property
     def host_name(self):
         return self.name_prefix + str(self._address[-1])
 
+    @property
     def image_type(self) -> str:
         return self._image_type
 
@@ -43,7 +84,7 @@ class HostGroup(object):
         self._hosts = []
 
     def add_hosts(self, image_type: str, machine_offset: int, machine_count: int) -> None:
-        self._hosts += (Host(self.name_prefix, x, image_type) for i, x in enumerate(self.network.hosts())
+        self._hosts += (SpecificHost(self.name_prefix, x, image_type) for i, x in enumerate(self.network.hosts())
                         if machine_offset <= i + 1 < machine_offset + machine_count)
 
     def hosts(self) -> List[Host]:
