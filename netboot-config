@@ -15,7 +15,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     for config_file in args.config_file:
-        with open(args.config_file, 'r') as stream:
+        with open(config_file, 'r') as stream:
             data_loaded = yaml.safe_load(stream)
 
             for data in data_loaded['hostgroups']:
