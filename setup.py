@@ -5,7 +5,7 @@ import setuptools
 
 setuptools.setup(
     name="netboot-config",
-    version="0.1.7",
+    version="0.1.8",
     author="Andreas Würl",
     author_email="andreas.wuerl@uniscon.com",
     description="Generator for KIWI based netboot config files",

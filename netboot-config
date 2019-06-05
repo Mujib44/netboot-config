@@ -35,6 +35,12 @@ if __name__ == '__main__':
 
         hosts_file_path = 'hosts'
         with open(hosts_file_path, 'w') as hosts_file:
+            hosts_file.write("""127.0.0.1	localhost
+::1		localhost ip6-localhost ip6-loopback
+ff02::1		ip6-allnodes
+ff02::2		ip6-allrouters
+
+""")
             for host in hosts:
                 hosts_file.write("{}\t{}\n".format(host.ipv4_address, host.host_name))
             for host_entry in static_hosts:
