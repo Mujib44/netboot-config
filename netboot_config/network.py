@@ -17,6 +17,11 @@ class Host(metaclass=ABCMeta):
 
     @property
     @abstractmethod
+    def ipv4_address(self):
+        pass
+
+    @property
+    @abstractmethod
     def ipv4_address_hex(self):
         pass
 
@@ -32,6 +37,10 @@ class DefaultHost(Host):
 
     @property
     def host_name(self):
+        return None
+
+    @property
+    def ipv4_address(self):
         return None
 
     @property
