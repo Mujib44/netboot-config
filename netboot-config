@@ -34,8 +34,6 @@ if __name__ == '__main__':
                 if isinstance(data, dict):
                     host_ip = data['address']
                     aliases = tuple(data['aliases'])
-
-                    print(host_ip, aliases)
                 else:
                     host_ip = data
                     aliases = ()
