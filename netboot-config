@@ -30,8 +30,16 @@ if __name__ == '__main__':
 
                 hosts += host_group.hosts()
 
-            for host_name, host_ip in data_loaded['hosts'].items():
-                static_hosts += [(host_ip, host_name)]
+            for host_name, data in data_loaded['hosts'].items():
+                if isinstance(data, dict):
+                    host_ip = data['address']
+                    aliases = tuple(data['aliases'])
+
+                    print(host_ip, aliases)
+                else:
+                    host_ip = data
+                    aliases = ()
+                static_hosts += [(host_ip, (host_name,) + aliases)]
 
         hosts_file_path = 'hosts'
         with open(hosts_file_path, 'w') as hosts_file:
@@ -44,7 +52,7 @@ ff02::2		ip6-allrouters
             for host in hosts:
                 hosts_file.write("{}\t{}\n".format(host.ipv4_address, host.host_name))
             for host_entry in static_hosts:
-                hosts_file.write("{}\t{}\n".format(host_entry[0], host_entry[1]))
+                hosts_file.write("{}\t{}\n".format(host_entry[0], " ".join(host_entry[1])))
 
 
         for host in hosts:
