@@ -1,6 +1,8 @@
+import ipaddress
+
 import yaml
 
-from .network import HostGroup
+from .network import HostGroup, Host, SpecificHost
 
 
 class Config(object):
@@ -22,11 +24,13 @@ class Config(object):
 
                 self.hosts += host_group.hosts()
 
-            for host_name, data in data_loaded['hosts'].items():
-                if isinstance(data, dict):
-                    host_ip = data['address']
-                    aliases = tuple(data['aliases'])
-                else:
-                    host_ip = data
-                    aliases = ()
-                self.static_hosts += [(host_ip, (host_name,) + aliases)]
+            for host_entry in data_loaded['hosts']:
+                prefix = host_entry['prefix']
+                host_ip = ipaddress.IPv4Address(host_entry['address'])
+                aliases = tuple(host_entry['aliases']) if 'aliases' in host_entry else None
+
+                self.static_hosts += [SpecificHost(prefix, host_ip, None, aliases)]
+
+    @property
+    def all_hosts(self):
+        return self.hosts + self.static_hosts

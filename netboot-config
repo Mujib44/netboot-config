@@ -25,10 +25,8 @@ ff02::1		ip6-allnodes
 ff02::2		ip6-allrouters
 
 """)
-        for host in config.hosts:
-            hosts_file.write("{}\t{}\n".format(host.ipv4_address, host.host_name))
-        for host_entry in config.static_hosts:
-            hosts_file.write("{}\t{}\n".format(host_entry[0], " ".join(host_entry[1])))
+        for host in config.all_hosts:
+            hosts_file.write("{}\n".format(host.entry))
 
         for host in config.hosts:
             host_config = HostConfig()

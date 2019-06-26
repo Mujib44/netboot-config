@@ -1,6 +1,6 @@
 import ipaddress
 from abc import ABCMeta, abstractmethod
-from typing import List
+from typing import List, Tuple
 
 
 class Host(metaclass=ABCMeta):
@@ -25,6 +25,16 @@ class Host(metaclass=ABCMeta):
     def ipv4_address_hex(self):
         pass
 
+    @property
+    @abstractmethod
+    def aliases(self):
+        pass
+
+    @property
+    @abstractmethod
+    def entry(self):
+        pass
+
 
 class DefaultHost(Host):
 
@@ -47,10 +57,18 @@ class DefaultHost(Host):
     def ipv4_address_hex(self):
         return "default"
 
+    @property
+    def aliases(self):
+        return []
+
+    @property
+    def entry(self):
+        return ""
+
 
 class SpecificHost(Host):
 
-    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: str):
+    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: str, aliases=None):
         self.name_prefix = name_prefix
 
         value = address._ip
@@ -64,6 +82,7 @@ class SpecificHost(Host):
         self._address = (fourth, third, second, first)
 
         self._image_type = image_type
+        self._aliases = tuple(aliases) if aliases is not None else ()
 
     @property
     def ipv4_address(self) -> str:
@@ -81,9 +100,16 @@ class SpecificHost(Host):
     def image_type(self) -> str:
         return self._image_type
 
+    @property
+    def aliases(self) -> Tuple[str]:
+        return self._aliases
+
+    @property
+    def entry(self) -> str:
+        return "{}\t{}".format(self.ipv4_address, " ".join((self.host_name,) + self.aliases))
+
     def __str__(self):
         return str(self._address)
-
 
 class HostGroup(object):
 
