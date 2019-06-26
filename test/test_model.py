@@ -18,7 +18,7 @@ class TestHostConfig(object):
 
         result = self.uut.render()
 
-        assert_that(result).is_equal_to('CONFIG=foo;bar;10.0.0.1;300')
+        assert_that(result).is_equal_to('CONF="foo;bar;{netboot_ip};300"')
 
     def test_renders_multiple_entrie(self):
         self.uut.add("foo", 'bar')
@@ -26,4 +26,4 @@ class TestHostConfig(object):
 
         result = self.uut.render()
 
-        assert_that(result).is_equal_to('CONFIG=foo;bar;10.0.0.1;300,baz;qux;10.0.0.1;300')
+        assert_that(result).is_equal_to('CONF="foo;bar;{netboot_ip};300,baz;qux;{netboot_ip};300"')
