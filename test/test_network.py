@@ -32,7 +32,7 @@ class TestNetwork(object):
         self.uut = HostGroup('foo', '10.11.12.0/24')
 
     def test_host_addresses(self):
-        self.uut.add_hosts('<image_type>', 11, 4)
+        self.uut.add_hosts(11, 4, '<image_type>')
 
         hosts = self.uut.hosts()
 
@@ -41,7 +41,7 @@ class TestNetwork(object):
         assert_that(addresses).contains_only('10.11.12.11', '10.11.12.12', '10.11.12.13', '10.11.12.14')
 
     def test_host_names(self):
-        self.uut.add_hosts('<image_type>', 11, 4)
+        self.uut.add_hosts(11, 4, '<image_type>')
 
         hosts = self.uut.hosts()
 

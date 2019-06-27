@@ -1,0 +1,25 @@
+netboot:
+  host: 10.0.10.11
+
+hostgroups:
+  - cidr: 10.0.11.0/24
+    prefix: abc11
+    hosts:
+      - image_type: type1
+        offset: 10
+        count: 2
+      - image_type: type2
+        offset: 20
+hosts:
+  - cidr: 10.0.10.0/24
+    prefix: abc10
+    hosts:
+      - offset: 10
+      - offset: 20
+        count: 2
+      - offset: 30
+        alias: foo
+      - offset: 40
+        aliases:
+          - bar
+          - baz

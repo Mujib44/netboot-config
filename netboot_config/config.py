@@ -17,19 +17,37 @@ class Config(object):
             data_loaded = yaml.safe_load(stream)
             self.netboot_host = data_loaded['netboot']['host']
 
-            for data in data_loaded['hostgroups']:
-                host_group = HostGroup(data['prefix'], data['cidr'])
-                for image in data['images']:
-                    host_group.add_hosts(image['image_type'], image['offset'], image['count'])
+            for host_group_entry in data_loaded['hostgroups']:
+                host_group = HostGroup(host_group_entry['prefix'], host_group_entry['cidr'])
+
+                for host_entry in host_group_entry['hosts']:
+                    self.map_entry(host_entry, host_group)
 
                 self.hosts += host_group.hosts()
 
-            for host_entry in data_loaded['hosts']:
-                prefix = host_entry['prefix']
-                host_ip = ipaddress.IPv4Address(host_entry['address'])
-                aliases = tuple(host_entry['aliases']) if 'aliases' in host_entry else None
+            for host_group_entry in data_loaded['hosts']:
+                host_group = HostGroup(host_group_entry['prefix'], host_group_entry['cidr'])
 
-                self.static_hosts += [SpecificHost(prefix, host_ip, None, aliases)]
+                for host_entry in host_group_entry['hosts']:
+                    self.map_entry(host_entry, host_group)
+
+                self.static_hosts += host_group.hosts()
+
+    def map_entry(self, host_entry, host_group):
+        offset_ = host_entry['offset']
+        count_ = host_entry['count'] if 'count' in host_entry else 1
+
+        if 'alias' in host_entry:
+            aliases_ = (host_entry['alias'],)
+        elif 'aliases' in host_entry:
+            aliases_ = tuple(host_entry['aliases'])
+        else:
+            aliases_ = None
+
+        image_type_ = host_entry['image_type'] if 'image_type' in host_entry else None
+
+        host_group.add_hosts(offset_, count_, aliases_, image_type_)
+
 
     @property
     def all_hosts(self):

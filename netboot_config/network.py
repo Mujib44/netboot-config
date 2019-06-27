@@ -1,6 +1,6 @@
 import ipaddress
 from abc import ABCMeta, abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 
 class Host(metaclass=ABCMeta):
@@ -68,7 +68,7 @@ class DefaultHost(Host):
 
 class SpecificHost(Host):
 
-    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: str, aliases=None):
+    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: Optional[str]=None, aliases: Optional[List[str]]=None):
         self.name_prefix = name_prefix
 
         value = address._ip
@@ -111,6 +111,7 @@ class SpecificHost(Host):
     def __str__(self):
         return str(self._address)
 
+
 class HostGroup(object):
 
     def __init__(self, name_prefix: str, cidr_string: str):
@@ -118,8 +119,9 @@ class HostGroup(object):
         self.name_prefix = name_prefix
         self._hosts = []
 
-    def add_hosts(self, image_type: str, machine_offset: int, machine_count: int) -> None:
-        self._hosts += (SpecificHost(self.name_prefix, x, image_type) for i, x in enumerate(self.network.hosts())
+    def add_hosts(self, machine_offset: int, machine_count: int, aliases: Optional[List[str]] = None,
+                  image_type: Optional[str] = None) -> None:
+        self._hosts += (SpecificHost(self.name_prefix, x, image_type, aliases) for i, x in enumerate(self.network.hosts())
                         if machine_offset <= i + 1 < machine_offset + machine_count)
 
     def hosts(self) -> List[Host]:
