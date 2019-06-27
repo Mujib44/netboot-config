@@ -68,8 +68,8 @@ class DefaultHost(Host):
 
 class SpecificHost(Host):
 
-    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: Optional[str]=None, aliases: Optional[List[str]]=None):
-        self.name_prefix = name_prefix
+    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: Optional[str]=None, aliases: Optional[List[str]]=None, address_digits=2):
+        self.host_name_template = name_prefix + "{:0" + str(address_digits) + "}"
 
         value = address._ip
         first = value % 256
@@ -94,7 +94,7 @@ class SpecificHost(Host):
 
     @property
     def host_name(self):
-        return self.name_prefix + str(self._address[-1])
+        return self.host_name_template.format(self._address[-1])
 
     @property
     def image_type(self) -> str:

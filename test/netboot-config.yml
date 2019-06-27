@@ -14,7 +14,7 @@ hosts:
   - cidr: 10.0.10.0/24
     prefix: abc10
     hosts:
-      - offset: 10
+      - offset: 5
       - offset: 20
         count: 2
       - offset: 30

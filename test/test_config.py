@@ -21,7 +21,7 @@ class TestConfig(object):
 
     def test_static_hosts_names(self):
         hosts = self.uut.static_hosts
-        assert_that([host.host_name for host in hosts]).contains("abc1010", "abc1020", "abc1021", "abc1030", "abc1040")
+        assert_that([host.host_name for host in hosts]).contains("abc1005", "abc1020", "abc1021", "abc1030", "abc1040")
 
     def test_static_hosts_image_types(self):
         hosts = self.uut.static_hosts
