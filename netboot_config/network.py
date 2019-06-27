@@ -68,7 +68,8 @@ class DefaultHost(Host):
 
 class SpecificHost(Host):
 
-    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: Optional[str]=None, aliases: Optional[List[str]]=None, address_digits=2):
+    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: Optional[str] = None,
+                 aliases: Optional[List[str]] = None, config: Optional[List[Tuple[str]]] = None, address_digits=2):
         self.host_name_template = name_prefix + "{:0" + str(address_digits) + "}"
 
         value = address._ip
@@ -83,6 +84,7 @@ class SpecificHost(Host):
 
         self._image_type = image_type
         self._aliases = tuple(aliases) if aliases is not None else ()
+        self._config = tuple(config) if config is not None else ()
 
     @property
     def ipv4_address(self) -> str:
@@ -105,6 +107,10 @@ class SpecificHost(Host):
         return self._aliases
 
     @property
+    def config(self):
+        return self._config
+
+    @property
     def entry(self) -> str:
         return "{}\t{}".format(self.ipv4_address, " ".join((self.host_name,) + self.aliases))
 
@@ -120,8 +126,9 @@ class HostGroup(object):
         self._hosts = []
 
     def add_hosts(self, machine_offset: int, machine_count: int, aliases: Optional[List[str]] = None,
-                  image_type: Optional[str] = None) -> None:
-        self._hosts += (SpecificHost(self.name_prefix, x, image_type, aliases) for i, x in enumerate(self.network.hosts())
+                  image_type: Optional[str] = None, config: Optional[Tuple[str]] = None) -> None:
+        self._hosts += (SpecificHost(self.name_prefix, x, image_type, aliases, config) for i, x in
+                        enumerate(self.network.hosts())
                         if machine_offset <= i + 1 < machine_offset + machine_count)
 
     def hosts(self) -> List[Host]:

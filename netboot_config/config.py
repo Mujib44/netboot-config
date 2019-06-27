@@ -44,9 +44,14 @@ class Config(object):
         else:
             aliases_ = None
 
+        if 'config' in host_entry:
+            config_ = [ (config_entry['source'], config_entry['target']) for config_entry in host_entry['config']]
+        else:
+            config_ = None
+
         image_type_ = host_entry['image_type'] if 'image_type' in host_entry else None
 
-        host_group.add_hosts(offset_, count_, aliases_, image_type_)
+        host_group.add_hosts(offset_, count_, aliases_, image_type_, config_)
 
 
     @property

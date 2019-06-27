@@ -10,6 +10,9 @@ hostgroups:
         count: 2
       - image_type: type2
         offset: 20
+        config:
+          - source: src
+            target: tgt
 hosts:
   - cidr: 10.0.10.0/24
     prefix: abc10

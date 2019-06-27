@@ -19,6 +19,10 @@ class TestConfig(object):
         hosts = self.uut.hosts
         assert_that([host.image_type for host in hosts]).contains("type1", "type1", "type2")
 
+    def test_hosts_image_config(self):
+        hosts = self.uut.hosts
+        assert_that([host.config for host in hosts]).contains((), (), (('src', 'tgt'),))
+
     def test_static_hosts_names(self):
         hosts = self.uut.static_hosts
         assert_that([host.host_name for host in hosts]).contains("abc1005", "abc1020", "abc1021", "abc1030", "abc1040")
@@ -30,3 +34,6 @@ class TestConfig(object):
     def test_static_hosts_image_aliases(self):
         hosts = self.uut.static_hosts
         assert_that([host.aliases for host in hosts]).contains((), (), (), ('foo',), ('bar', 'baz'))
+
+    def test_all_hosts(self):
+        assert_that(len(self.uut.all_hosts)).is_equal_to(8)
