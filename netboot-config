@@ -38,9 +38,7 @@ ff02::2		ip6-allrouters
                 host_name_file.write("{}\n".format(host.host_name))
             host_config.add(os.path.join('KIWI', host_name_file_path), '/etc/hostname')
             host_config.add(os.path.join('KIWI', hosts_file_path), '/etc/hosts')
-            print(host_name)
             for config_entry in host.config:
-                print(" ", config_entry)
                 host_config.add(os.path.join('KIWI', config_entry[0]), config_entry[1])
 
             ConfigFile(host, host_config, config.netboot_host).write()
