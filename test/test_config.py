@@ -37,3 +37,16 @@ class TestConfig(object):
 
     def test_all_hosts(self):
         assert_that(len(self.uut.all_hosts)).is_equal_to(8)
+
+    def test_host_in_static_network(self):
+        host = self.uut.get_host('10.0.10.99')
+        assert_that(host.host_name).is_equal_to("abc1099")
+
+    def test_host_in_dynamic_network(self):
+        host = self.uut.get_host('10.0.11.99')
+        assert_that(host.host_name).is_equal_to("abc1199")
+
+    def test_host_outside_networks(self):
+        host = self.uut.get_host('10.0.12.99')
+        assert_that(host).is_none()
+

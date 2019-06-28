@@ -1,14 +1,14 @@
-from ipaddress import IPv4Address
+from ipaddress import IPv4Address, IPv4Network
 
 from assertpy import assert_that
 
-from netboot_config.network import HostGroup, Host, SpecificHost
+from netboot_config.network import HostGroup, HostMeta, Host
 
 
-class TestSpecificHost(object):
+class TestHost(object):
 
     def setup_method(self):
-        self.uut = SpecificHost('foo', IPv4Address('10.11.12.13'), 'base_image')
+        self.uut = Host('foo', IPv4Network('10.11.12.0/24'), IPv4Address('10.11.12.13'), 'base_image')
 
     def test_ipv4_address(self):
         result = self.uut.ipv4_address

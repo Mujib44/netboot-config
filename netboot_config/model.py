@@ -1,4 +1,4 @@
-from .network import Host
+from .network import HostMeta
 
 
 class HostConfig(object):
@@ -17,7 +17,7 @@ class HostConfig(object):
 
 class ConfigFile(object):
 
-    def __init__(self, host: Host, host_config: HostConfig, netboot_ip: str):
+    def __init__(self, host: HostMeta, host_config: HostConfig, netboot_ip: str):
         self.host = host
         self.host_config = host_config
         self.netboot_ip = netboot_ip

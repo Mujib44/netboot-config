@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from typing import List, Tuple, Optional
 
 
-class Host(metaclass=ABCMeta):
+class HostMeta(metaclass=ABCMeta):
 
     @property
     @abstractmethod
@@ -36,7 +36,7 @@ class Host(metaclass=ABCMeta):
         pass
 
 
-class DefaultHost(Host):
+class DefaultHost(HostMeta):
 
     def __init__(self, image_type):
         self._image_type = image_type
@@ -66,21 +66,14 @@ class DefaultHost(Host):
         return ""
 
 
-class SpecificHost(Host):
+class Host(HostMeta):
 
-    def __init__(self, name_prefix: str, address: ipaddress.IPv4Address, image_type: Optional[str] = None,
+    def __init__(self, name_prefix: str, network: ipaddress.IPv4Network, address: ipaddress.IPv4Address, image_type: Optional[str] = None,
                  aliases: Optional[List[str]] = None, config: Optional[List[Tuple[str]]] = None, address_digits=2):
         self.host_name_template = name_prefix + "{:0" + str(address_digits) + "}"
 
-        value = address._ip
-        first = value % 256
-        value //= 256
-        second = value % 256
-        value //= 256
-        third = value % 256
-        value //= 256
-        fourth = value % 256
-        self._address = (fourth, third, second, first)
+        self._address = address
+        self._network = network
 
         self._image_type = image_type
         self._aliases = tuple(aliases) if aliases is not None else ()
@@ -88,15 +81,16 @@ class SpecificHost(Host):
 
     @property
     def ipv4_address(self) -> str:
-        return ".".join((str(x) for x in self._address))
+        return str(self._address)
 
     @property
     def ipv4_address_hex(self) -> str:
-        return "".join(('{:02X}'.format(x) for x in self._address))
+        return "{:08X}".format(self._address._ip)
 
     @property
     def host_name(self):
-        return self.host_name_template.format(self._address[-1])
+        addr_mask = (1 << 32 - self._network.prefixlen) - 1
+        return self.host_name_template.format(self._address._ip & addr_mask)
 
     @property
     def image_type(self) -> str:
@@ -127,9 +121,9 @@ class HostGroup(object):
 
     def add_hosts(self, machine_offset: int, machine_count: int, aliases: Optional[List[str]] = None,
                   image_type: Optional[str] = None, config: Optional[Tuple[str]] = None) -> None:
-        self._hosts += (SpecificHost(self.name_prefix, x, image_type, aliases, config) for i, x in
+        self._hosts += (Host(self.name_prefix, self.network, x, image_type, aliases, config) for i, x in
                         enumerate(self.network.hosts())
                         if machine_offset <= i + 1 < machine_offset + machine_count)
 
-    def hosts(self) -> List[Host]:
+    def hosts(self) -> List[HostMeta]:
         return self._hosts
