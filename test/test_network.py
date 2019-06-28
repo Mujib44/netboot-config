@@ -15,6 +15,11 @@ class TestHost(object):
 
         assert_that(result).is_equal_to('10.11.12.13')
 
+    def test_reverse_pointer(self):
+        result = self.uut.reverse_pointer
+
+        assert_that(result).is_equal_to('13.12.11.10.in-addr.arpa')
+
     def test_hex_ipv4_address(self):
         result = self.uut.ipv4_address_hex
 

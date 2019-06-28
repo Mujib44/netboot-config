@@ -84,6 +84,10 @@ class Host(HostMeta):
         return str(self._address)
 
     @property
+    def reverse_pointer(self) -> str:
+        return self._address.reverse_pointer
+
+    @property
     def ipv4_address_hex(self) -> str:
         return "{:08X}".format(self._address._ip)
 
