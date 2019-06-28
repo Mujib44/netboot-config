@@ -1,5 +1,5 @@
 import ipaddress
-from typing import Optional, List
+from typing import Optional, List, ValuesView
 
 import yaml
 
@@ -10,8 +10,8 @@ class Config(object):
 
     def __init__(self, config_file: str):
 
-        self.hosts = []
-        self.static_hosts = []
+        self._hosts = {}
+        self._static_hosts = {}
         self.netboot_host = None
         self.network_prefixes = {}
 
@@ -25,7 +25,7 @@ class Config(object):
                 for host_entry in host_group_entry['hosts']:
                     self.map_entry(host_entry, host_group)
 
-                self.hosts += host_group.hosts()
+                self._hosts.update({host.ipv4_address: host for host in host_group.hosts()})
 
             for host_group_entry in data_loaded['hosts']:
                 host_group = self.create_host_group(host_group_entry)
@@ -33,7 +33,7 @@ class Config(object):
                 for host_entry in host_group_entry['hosts']:
                     self.map_entry(host_entry, host_group)
 
-                self.static_hosts += host_group.hosts()
+                self._static_hosts.update({host.ipv4_address: host for host in host_group.hosts()})
 
     def create_host_group(self, host_group_entry):
         prefix_ = host_group_entry['prefix']
@@ -63,10 +63,24 @@ class Config(object):
         host_group.add_hosts(offset_, count_, aliases_, image_type_, config_)
 
     @property
+    def hosts(self) -> List[Host]:
+        return list(self._hosts.values())
+
+    @property
+    def static_hosts(self) -> List[Host]:
+        return list(self._static_hosts.values())
+
+    @property
     def all_hosts(self) -> List[Host]:
         return self.hosts + self.static_hosts
 
     def get_host(self, ip_address_string: str) -> Optional[Host]:
+        if ip_address_string in self.static_hosts:
+            return self._static_hosts[ip_address_string]
+
+        if ip_address_string in self.hosts:
+            return self._hosts[ip_address_string]
+
         ip_address = ipaddress.IPv4Address(ip_address_string)
         for cidr, prefix in self.network_prefixes.items():
             network = ipaddress.IPv4Network(cidr)
