@@ -75,10 +75,10 @@ class Config(object):
         return self.hosts + self.static_hosts
 
     def get_host(self, ip_address_string: str) -> Optional[Host]:
-        if ip_address_string in self.static_hosts:
+        if ip_address_string in self._static_hosts:
             return self._static_hosts[ip_address_string]
 
-        if ip_address_string in self.hosts:
+        if ip_address_string in self._hosts:
             return self._hosts[ip_address_string]
 
         ip_address = ipaddress.IPv4Address(ip_address_string)
