@@ -62,3 +62,6 @@ class TestConfig(object):
         host = self.uut.get_host('10.0.12.99')
         assert_that(host).is_none()
 
+    def test_aliases(self):
+        aliases = self.uut.aliases
+        assert_that(aliases).contains(('foo', 'abc1030'), ('bar', 'abc1040'), ('baz', 'abc1040'))

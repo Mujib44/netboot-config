@@ -74,6 +74,15 @@ class Config(object):
     def all_hosts(self) -> List[Host]:
         return self.hosts + self.static_hosts
 
+    @property
+    def aliases(self):
+        aliases = []
+        for host in self.all_hosts:
+            host_name = host.host_name
+            for alias in host.aliases:
+                aliases.append((alias, host_name))
+        return aliases
+
     def get_host(self, ip_address_string: str) -> Optional[Host]:
         if ip_address_string in self._static_hosts:
             return self._static_hosts[ip_address_string]
