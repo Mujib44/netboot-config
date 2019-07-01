@@ -96,3 +96,20 @@ class Config(object):
             if ip_address in network:
                 return Host(prefix, network, ip_address)
         return None
+
+    def render_hosts(self):
+        lines = []
+
+        lines.append("127.0.0.1\tlocalhost")
+        lines.append("::1		localhost ip6-localhost ip6-loopback")
+        lines.append("ff02::1		ip6-allnodes")
+        lines.append("ff02::2		ip6-allrouters")
+        lines.append("")
+
+        for host in self.all_hosts:
+            lines.append(host.entry)
+
+        return "\n".join(lines)
+
+
+

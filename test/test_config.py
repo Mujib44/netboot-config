@@ -65,3 +65,20 @@ class TestConfig(object):
     def test_aliases(self):
         aliases = self.uut.aliases
         assert_that(aliases).contains(('foo', 'abc1030'), ('bar', 'abc1040'), ('baz', 'abc1040'))
+
+    def test_render_hosts(self):
+        result = self.uut.render_hosts()
+
+        assert_that(result).is_equal_to("""127.0.0.1	localhost
+::1		localhost ip6-localhost ip6-loopback
+ff02::1		ip6-allnodes
+ff02::2		ip6-allrouters
+
+10.0.11.10	abc1110
+10.0.11.11	abc1111
+10.0.11.20	abc1120
+10.0.10.5	abc1005
+10.0.10.20	abc1020
+10.0.10.21	abc1021
+10.0.10.30	abc1030 foo
+10.0.10.40	abc1040 bar baz""")
