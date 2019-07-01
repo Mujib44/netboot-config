@@ -101,9 +101,13 @@ class Config(object):
         lines = []
 
         lines.append("127.0.0.1\tlocalhost")
-        lines.append("::1		localhost ip6-localhost ip6-loopback")
-        lines.append("ff02::1		ip6-allnodes")
-        lines.append("ff02::2		ip6-allrouters")
+        lines.append("::1\tlocalhost ip6-localhost ip6-loopback")
+        lines.append("fe00::0\tip6-localnet")
+        lines.append("ff00::0\tip6-mcastprefix")
+        lines.append("ff02::1\tip6-allnodes")
+        lines.append("ff02::2\tip6-allrouters")
+        lines.append("ff02::3\tip6-allhosts")
+
         lines.append("")
 
         for host in self.all_hosts:
