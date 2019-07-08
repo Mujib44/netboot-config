@@ -18,6 +18,7 @@ hosts:
     prefix: abc10
     hosts:
       - offset: 5
+        alias: netboot
       - offset: 20
         count: 2
       - offset: 30

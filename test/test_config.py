@@ -9,7 +9,7 @@ class TestConfig(object):
         self.uut = Config('netboot-config.yml')
 
     def test_netboot_host(self):
-        assert_that(self.uut.netboot_host).is_equal_to("10.0.10.11")
+        assert_that(self.uut.netboot_ip).is_equal_to("10.0.10.5")
 
     def test_hosts_names(self):
         hosts = self.uut.hosts
@@ -80,7 +80,7 @@ ff02::3	ip6-allhosts
 10.0.11.10	abc1110
 10.0.11.11	abc1111
 10.0.11.20	abc1120
-10.0.10.5	abc1005
+10.0.10.5	abc1005 netboot
 10.0.10.20	abc1020
 10.0.10.21	abc1021
 10.0.10.30	abc1030 foo

@@ -12,13 +12,11 @@ class Config(object):
 
         self._hosts = {}
         self._static_hosts = {}
-        self.netboot_host = None
         self.network_prefixes = {}
         self._aliases = {}
 
         with open(config_file, 'r') as stream:
             data_loaded = yaml.safe_load(stream)
-            self.netboot_host = data_loaded['netboot']['host']
 
             for host_group_entry in data_loaded['hostgroups']:
                 host_group = self.create_host_group(host_group_entry)
@@ -37,7 +35,6 @@ class Config(object):
                 self._static_hosts.update({host.ipv4_address: host for host in host_group.hosts()})
 
             for host in self.all_hosts:
-                host_name = host.host_name
                 for alias in host.aliases:
                     self._aliases[alias] = host
 
@@ -86,6 +83,10 @@ class Config(object):
         for alias, host in self._aliases.items():
             aliases.append((alias, host.host_name))
         return aliases
+
+    @property
+    def netboot_ip(self):
+        return self.alias('netboot').ipv4_address
 
     def alias(self, alias):
         return self._aliases[alias] if alias in self._aliases else None
