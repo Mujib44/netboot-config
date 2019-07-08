@@ -34,7 +34,7 @@ if __name__ == '__main__':
         for config_entry in host.config:
             host_config.add(os.path.join('KIWI', config_entry[0]), config_entry[1])
 
-        ConfigFile(host, host_config, config.netboot_host).write()
+        ConfigFile(host, host_config, config.netboot_ip).write()
 
     host_config = HostConfig()
-    ConfigFile(DefaultHost('base_image'), host_config, config.netboot_host).write()
+    ConfigFile(DefaultHost('base_image'), host_config, config.netboot_ip).write()
