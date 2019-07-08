@@ -70,9 +70,12 @@ class TestConfig(object):
         result = self.uut.render_hosts()
 
         assert_that(result).is_equal_to("""127.0.0.1	localhost
-::1		localhost ip6-localhost ip6-loopback
-ff02::1		ip6-allnodes
-ff02::2		ip6-allrouters
+::1	localhost ip6-localhost ip6-loopback
+fe00::0	ip6-localnet
+ff00::0	ip6-mcastprefix
+ff02::1	ip6-allnodes
+ff02::2	ip6-allrouters
+ff02::3	ip6-allhosts
 
 10.0.11.10	abc1110
 10.0.11.11	abc1111
@@ -82,3 +85,15 @@ ff02::2		ip6-allrouters
 10.0.10.21	abc1021
 10.0.10.30	abc1030 foo
 10.0.10.40	abc1040 bar baz""")
+
+    def test_find_alias_by_name(self):
+
+        result = self.uut.alias('foo')
+
+        assert_that(result.host_name).is_equal_to("abc1030")
+
+    def test_find_alias_by_name_no_result(self):
+
+        result = self.uut.alias('qux')
+
+        assert_that(result).is_none()

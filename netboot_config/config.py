@@ -1,5 +1,5 @@
 import ipaddress
-from typing import Optional, List, ValuesView
+from typing import Optional, List
 
 import yaml
 
@@ -14,6 +14,7 @@ class Config(object):
         self._static_hosts = {}
         self.netboot_host = None
         self.network_prefixes = {}
+        self._aliases = {}
 
         with open(config_file, 'r') as stream:
             data_loaded = yaml.safe_load(stream)
@@ -34,6 +35,11 @@ class Config(object):
                     self.map_entry(host_entry, host_group)
 
                 self._static_hosts.update({host.ipv4_address: host for host in host_group.hosts()})
+
+            for host in self.all_hosts:
+                host_name = host.host_name
+                for alias in host.aliases:
+                    self._aliases[alias] = host
 
     def create_host_group(self, host_group_entry):
         prefix_ = host_group_entry['prefix']
@@ -77,11 +83,12 @@ class Config(object):
     @property
     def aliases(self):
         aliases = []
-        for host in self.all_hosts:
-            host_name = host.host_name
-            for alias in host.aliases:
-                aliases.append((alias, host_name))
+        for alias, host in self._aliases.items():
+            aliases.append((alias, host.host_name))
         return aliases
+
+    def alias(self, alias):
+        return self._aliases[alias] if alias in self._aliases else None
 
     def get_host(self, ip_address_string: str) -> Optional[Host]:
         if ip_address_string in self._static_hosts:
@@ -114,6 +121,3 @@ class Config(object):
             lines.append(host.entry)
 
         return "\n".join(lines)
-
-
-
