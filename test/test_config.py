@@ -1,3 +1,5 @@
+import os
+
 from assertpy import assert_that
 
 from netboot_config import Config
@@ -6,7 +8,9 @@ from netboot_config import Config
 class TestConfig(object):
 
     def setup_method(self):
-        self.uut = Config('netboot-config.yml')
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, 'netboot-config.yml')
+        self.uut = Config(filename)
 
     def test_netboot_ip(self):
         assert_that(self.uut.netboot_ip).is_equal_to("10.0.10.5")
