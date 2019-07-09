@@ -1,6 +1,3 @@
-netboot:
-  host: 10.0.10.11
-
 hostgroups:
   - cidr: 10.0.11.0/24
     prefix: abc11
